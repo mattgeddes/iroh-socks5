@@ -1,5 +1,12 @@
 # iroh-socks5
 
+[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square)](https://docs.rs/iroh-socks5/)
+[![Crates.io](https://img.shields.io/crates/v/iroh.svg?style=flat-square)](https://crates.io/crates/iroh-socks5)
+[![downloads](https://img.shields.io/crates/d/iroh.svg?style=flat-square)](https://crates.io/crates/iroh-socks5)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE-MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](LICENSE-APACHE)
+
+
 ## Overview
 
 This is an Iroh Protocol implementation for being able to tunnel SOCKS5 proxy sessions over Iroh. It comes with an example binary to show a simple use case. It consists of an Iroh client that implements a SOCKS5 proxy server. SOCKS5 requests received by this server, are sent via the Iroh Protocol client to the Iroh Protocol server, which then enacts the SOCKS5 request.

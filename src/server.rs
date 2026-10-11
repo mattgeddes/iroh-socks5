@@ -46,13 +46,7 @@ impl Server {
         allow: HashSet<EndpointId>,
         resolver: DnsResolver,
     ) -> Result<Self> {
-        if allow.is_empty() {
-            tracing::warn!("allow-list is empty; accepting connections from any endpoint");
-        }
-        let handler = Handler {
-            allow: Arc::new(allow),
-            resolver: Arc::new(resolver),
-        };
+        let handler = Handler::new(allow, resolver);
         let router = Router::builder(endpoint.clone())
             .accept(protocol::ALPN, handler)
             .spawn();
@@ -76,10 +70,29 @@ impl Server {
     }
 }
 
+/// The SOCKS5-over-iroh protocol handler, for mounting on a caller-managed [`Router`].
+///
+/// Use this instead of [`Server`] when the endpoint already has a router serving other
+/// protocols: an endpoint can only have one router accepting its connections. Mount it under
+/// [`crate::ALPN`].
 #[derive(Debug, Clone)]
-struct Handler {
+pub struct Handler {
     allow: Arc<HashSet<EndpointId>>,
     resolver: Arc<DnsResolver>,
+}
+
+impl Handler {
+    /// Build a handler that accepts only peers in `allow` (or any peer, if `allow` is empty),
+    /// resolving domain targets with `resolver`.
+    pub fn new(allow: HashSet<EndpointId>, resolver: DnsResolver) -> Self {
+        if allow.is_empty() {
+            tracing::warn!("allow-list is empty; accepting connections from any endpoint");
+        }
+        Self {
+            allow: Arc::new(allow),
+            resolver: Arc::new(resolver),
+        }
+    }
 }
 
 impl ProtocolHandler for Handler {
